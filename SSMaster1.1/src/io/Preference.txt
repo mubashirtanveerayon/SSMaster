@@ -1,0 +1,10 @@
+[Settings]
+fullscreen=true
+custom=300,150,300,300
+delay=0
+save Location=C:\users\ayon2\Pictures\
+theme=0
+save as=0
+always on top=false
+FPS=30
+duration=60
