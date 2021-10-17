@@ -10,12 +10,12 @@ public class PreferenceWindow extends JFrame{
     String formats[];
     String themes[];
     String titles[];
-    JLabel labels[];
+    public JLabel labels[];
     public JSpinner delay;
     public JTextField defaultSavePath;
     public JButton changeDefaultSavePathButton;
-    public JCheckBox alwaysOnTop;
-    public JComboBox lookAndFeel,format;
+    public JCheckBox alwaysOnTop,openFile;
+    public JComboBox theme,format;
 
     public PreferenceWindow(){
         super("Preference");
@@ -27,10 +27,10 @@ public class PreferenceWindow extends JFrame{
     }
 
     public void initComponents(){
-        titles = new String[]{"Delay :","Save Location :","Look and feel :","Save as :"};
+        titles = new String[]{"Delay :","Save Location :","Theme :","Save as :"};
         labels = new JLabel[titles.length];
         Font font = new Font("Arial",Font.BOLD,13);
-        int x = 30,y = 50;
+        int x = 30,y = 45;
         for(int i=0;i<labels.length;i++){
             labels[i] = new JLabel(titles[i]);
             labels[i].setFont(font);
@@ -54,10 +54,10 @@ public class PreferenceWindow extends JFrame{
         changeDefaultSavePathButton.setFocusable(false);
 
         themes = new String[]{"White","Dark"};
-        lookAndFeel = new JComboBox(themes);
-        lookAndFeel.setSelectedIndex(Values.theme);
-        lookAndFeel.setFont(font);
-        lookAndFeel.setBounds(150,y*3,80,20);
+        theme = new JComboBox(themes);
+        theme.setSelectedIndex(Values.theme);
+        theme.setFont(font);
+        theme.setBounds(150,y*3,80,20);
 
         formats = new String[]{"PNG","JPG"};
         format = new JComboBox(formats);
@@ -71,11 +71,18 @@ public class PreferenceWindow extends JFrame{
         alwaysOnTop.setBounds(x,y*5,120,17);
         alwaysOnTop.setFocusable(false);
 
+        openFile = new JCheckBox("Open after taking screenshot");
+        openFile.setFont(font);
+        openFile.setBounds(x,y*6,230,17);
+        openFile.setFocusable(false);
+        openFile.setSelected(Values.openAfterCapture);
+
+        add(openFile);
         add(alwaysOnTop);
         add(defaultSavePath);
         add(delay);
         add(changeDefaultSavePathButton);
-        add(lookAndFeel);
+        add(theme);
         add(format);
     }
 

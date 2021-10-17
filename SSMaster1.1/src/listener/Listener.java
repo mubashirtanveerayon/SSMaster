@@ -4,15 +4,15 @@ import additionalwindows.CustomFrame;
 import additionalwindows.PreferenceWindow;
 import additionalwindows.PreviewWindow;
 import capture.Capture;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import io.IO;
 import parameter.Values;
 import ui.UI;
 import ui.Window;
 
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
@@ -24,6 +24,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public CustomFrame cf;
     public PreferenceWindow pw;
 
+    public Capture capture;
+
     public int x,y;
 
     Window window;
@@ -33,11 +35,14 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         this.window = window;
         this.io = io;
         fc = new JFileChooser(".");
+        capture = new Capture();
         initWindows();
         registerComponentListener();
         if(!Values.fullscreen){
             cf.setVisible(true);
         }
+        ui.conCaptDetails(Values.continuous);
+        changeTheme();
     }
 
     public void initWindows(){
@@ -48,6 +53,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public void registerComponentListener(){
+        //window
+        window.addWindowListener(this);
         //ui
         ui.newCapture.addActionListener(this);
         ui.open.addActionListener(this);
@@ -71,8 +78,9 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.alwaysOnTop.addActionListener(this);
         pw.defaultSavePath.addKeyListener(this);
         pw.delay.addChangeListener(this);
-        pw.lookAndFeel.addActionListener(this);
+        pw.theme.addActionListener(this);
         pw.format.addActionListener(this);
+        pw.openFile.addActionListener(this);
         pw.addWindowListener(this);
     }
 
@@ -84,11 +92,12 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         Values.customFrame[3] = cf.getHeight();
         Values.delay = (int)(pw.delay.getValue());
         Values.defaultLocation = pw.defaultSavePath.getText();
-        Values.theme = pw.lookAndFeel.getSelectedIndex();
+        Values.theme = pw.theme.getSelectedIndex();
         Values.format = pw.format.getSelectedIndex();
         Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
         Values.fps = (int)ui.fps.getValue();
         Values.duration = Integer.parseInt(ui.duration.getText());
+        Values.openAfterCapture = pw.openFile.isSelected();
     }
 
     public void capture(){
@@ -96,7 +105,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         window.setVisible(false);
         pw.setVisible(false);
         cf.setVisible(false);
-        Capture capture = new Capture();
+        capture.wait = true;
         Thread thread = new Thread(capture);
         thread.start();
         try{
@@ -113,6 +122,60 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         window.setVisible(true);
     }
 
+    public void exit(){
+        fetchData();
+        io.write();
+        System.exit(0);
+    }
+
+    public void changeTheme(){
+        window.setAlwaysOnTop(Values.alwaysOnTop);
+        pw.setAlwaysOnTop(Values.alwaysOnTop);
+        cf.setAlwaysOnTop(Values.alwaysOnTop);
+
+        if(Values.theme == 0){
+            window.getContentPane().setBackground(null);
+            ui.custom.setForeground(null);
+            ui.custom.setBackground(null);
+            ui.fullscreen.setForeground(null);
+            ui.fullscreen.setBackground(null);
+            ui.contCapture.setForeground(null);
+            ui.contCapture.setBackground(null);
+            ui.fpsLabel.setForeground(null);
+            ui.durationLabel.setForeground(null);
+            ui.fpsLabel.setBackground(null);
+            ui.durationLabel.setBackground(null);
+            pw.getContentPane().setBackground(null);
+            for(JLabel label :pw.labels){
+                label.setForeground(null);
+            }
+            pw.alwaysOnTop.setBackground(null);
+            pw.alwaysOnTop.setForeground(null);
+            pw.openFile.setBackground(null);
+            pw.openFile.setForeground(null);
+        }else{
+            window.getContentPane().setBackground(Color.gray);
+            ui.custom.setForeground(Color.white);
+            ui.custom.setBackground(Color.gray);
+            ui.fullscreen.setForeground(Color.white);
+            ui.fullscreen.setBackground(Color.gray);
+            ui.contCapture.setForeground(Color.white);
+            ui.contCapture.setBackground(Color.gray);
+            ui.fpsLabel.setForeground(Color.white);
+            ui.durationLabel.setForeground(Color.white);
+            ui.fpsLabel.setBackground(Color.gray);
+            ui.durationLabel.setBackground(Color.gray);
+            pw.getContentPane().setBackground(Color.gray);
+            for(JLabel label :pw.labels){
+                label.setForeground(Color.white);
+            }
+            pw.alwaysOnTop.setBackground(Color.gray);
+            pw.alwaysOnTop.setForeground(Color.white);
+            pw.openFile.setBackground(Color.gray);
+            pw.openFile.setForeground(Color.white);
+        }
+    }
+
     public void show(){
         window.setVisible(true);
     }
@@ -121,7 +184,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if(source == ui.contCapture){
-            ui.conCaptDetails(ui.contCapture.isSelected());
+            Values.continuous = ui.contCapture.isSelected();
+            ui.conCaptDetails(Values.continuous);
         }else if(source == ui.fullscreen || source == ui.custom){
             Values.fullscreen = ui.fullscreen.isSelected();
             cf.setVisible(!Values.fullscreen);
@@ -137,23 +201,27 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             pw.setVisible(true);
         }else if(source == ui.capture) {
             fetchData();
-            capture();
+            if(ui.contCapture.isSelected()){
+
+            }else{
+                capture();
+            }
         }else if(source == ui.exit){
-            System.exit(0);
+            exit();
         }else if(source == ui.newCapture){
             fetchData();
             capture();
         }else if(source == ui.snapIn3){
-
+            int prevDelay = Values.delay;
+            Values.delay = 3;
+            capture();
+            Values.delay = prevDelay;
         }else if(source == ui.snapIn5){
-
-        }
-
-
-
-
-
-        if(source == pw.changeDefaultSavePathButton){
+            int prevDelay = Values.delay;
+            Values.delay = 5;
+            capture();
+            Values.delay = prevDelay;
+        }else if(source == pw.changeDefaultSavePathButton){
             fc.setDialogTitle("Save");
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int response = fc.showOpenDialog(null);
@@ -161,10 +229,14 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
                 Values.defaultLocation = fc.getSelectedFile().getAbsolutePath() + File.separator;
                 pw.defaultSavePath.setText(Values.defaultLocation);
             }
-        }else if(source == pw.lookAndFeel){
-            Values.theme = pw.lookAndFeel.getSelectedIndex();
+        }else if(source == pw.theme){
+            Values.theme = pw.theme.getSelectedIndex();
         }else if(source == pw.format){
             Values.format = pw.format.getSelectedIndex();
+        }else if(source == pw.alwaysOnTop){
+            Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
+        }else if(source == pw.openFile){
+            Values.openAfterCapture = pw.openFile.isSelected();
         }
     }
 
@@ -241,7 +313,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         if(e.getSource() == pw){
             fetchData();
             io.write();
+            changeTheme();
             pw.setVisible(false);
+        }else if(e.getSource() == window){
+            exit();
         }
     }
 

@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.util.Scanner;
 
 public class IO {
 
@@ -47,7 +46,9 @@ public class IO {
                 +"save as="+Values.format+";\n"
                 +"always on top="+Values.alwaysOnTop+";\n"
                 +"fps="+Values.fps+";\n"
-                +"duration="+Values.duration+";";
+                +"duration="+Values.duration+";\n"
+                +"continuous capture="+Values.continuous+";\n"
+                +"open after capture="+Values.openAfterCapture +";";
     }
 
     public static void saveImage(BufferedImage ss){
@@ -59,6 +60,9 @@ public class IO {
         }
         try {
             ImageIO.write(ss, imgFormat, file);
+            if(Values.openAfterCapture){
+                Desktop.getDesktop().open(file);
+            }
         }catch(Exception ex){
             System.out.println(ex);
         }
@@ -73,7 +77,7 @@ public class IO {
             String content = readFileContent(preferenceFile);
             if(!content.equals("")){
                 String lines[] = content.split(";");
-                if(lines.length==9){
+                if(lines.length==11){
                     Values.fullscreen = lines[0].split("=")[1].equals("true");
                     for(int i=0;i<Values.customFrame.length;i++){
                         Values.customFrame[i]=Integer.parseInt(lines[1].split("=")[1].split(",")[i]);
@@ -85,6 +89,8 @@ public class IO {
                     Values.alwaysOnTop = lines[6].split("=")[1].equals("true");
                     Values.fps = Integer.parseInt(lines[7].split("=")[1]);
                     Values.duration = Integer.parseInt(lines[8].split("=")[1]);
+                    Values.continuous = lines[9].split("=")[1].equals("true");
+                    Values.openAfterCapture =lines[10].split("=")[1].equals("true");
                     return true;
                 }
             }

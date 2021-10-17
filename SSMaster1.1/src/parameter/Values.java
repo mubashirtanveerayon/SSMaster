@@ -34,4 +34,8 @@ public class Values {
 
     public static int format = 0;//0 means png and 1 means jpg;
 
+    public static boolean continuous = false;
+
+    public static boolean openAfterCapture = false;
+
 }

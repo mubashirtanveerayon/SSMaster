@@ -91,6 +91,7 @@ public class UI {
         contCapture.setBounds(50,70,190,30);
         contCapture.setFont(font);
         contCapture.setFocusable(false);
+        contCapture.setSelected(Values.continuous);
 
         SpinnerNumberModel sModel = new SpinnerNumberModel(Values.fps,1,60,1);
         fps = new JSpinner(sModel);
@@ -118,7 +119,7 @@ public class UI {
         durationLabel.setLocation(135,120);
 
         capture = new JButton("Capture");
-        capture.setBounds(95,CAPTBTN_NORMAL_Y,100,30);
+        capture.setBounds(80,CAPTBTN_NORMAL_Y,100,30);
         capture.setFont(font);
         capture.setFocusable(false);
 

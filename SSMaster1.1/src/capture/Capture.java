@@ -5,10 +5,17 @@ import parameter.Values;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.*;
 
 import static java.lang.Thread.sleep;
 
-public class Capture implements Runnable{
+public class Capture extends TimerTask implements Runnable{
+
+    public boolean wait;
+
+    public Capture(){
+        wait = Values.continuous;
+    }
 
     public static BufferedImage captureScreenshot(int[] frame){
         int x = frame[0],y = frame[1],w = frame[2],h = frame[3];
@@ -28,7 +35,9 @@ public class Capture implements Runnable{
     @Override
     public void run() {
         try{
-            sleep(Values.delay*1000);
+            if(wait){
+                sleep(Values.delay*1000);
+            }
             if(Values.fullscreen){
                 IO.saveImage(captureScreenshot());
             }else{
