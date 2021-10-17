@@ -8,7 +8,7 @@ public class Values {
 
     public static boolean alwaysOnTop = false;
 
-    public static int[] customFrame = new int[4];
+    public static int[] customFrame = new int[]{0,0,300,300};
 
     public static int delay = 0;
 

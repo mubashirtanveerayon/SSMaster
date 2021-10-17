@@ -19,7 +19,7 @@ public class PreferenceWindow extends JFrame{
 
     public PreferenceWindow(){
         super("Preference");
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(0);
         setBounds(Values.SCREEN_SIZE.width/2-370/2,Values.SCREEN_SIZE.height/2-350/2,370,350);
         setLayout(null);
         setResizable(false);
@@ -28,17 +28,17 @@ public class PreferenceWindow extends JFrame{
 
     public void initComponents(){
         titles = new String[]{"Delay :","Save Location :","Look and feel :","Save as :"};
-        labels = new JLabel[titles.length+1];
+        labels = new JLabel[titles.length];
         Font font = new Font("Arial",Font.BOLD,13);
         int x = 30,y = 50;
-        for(int i=0;i<labels.length-1;i++){
+        for(int i=0;i<labels.length;i++){
             labels[i] = new JLabel(titles[i]);
             labels[i].setFont(font);
             labels[i].setBounds(x,y*i+y,100,20);
             add(labels[i]);
         }
 
-        SpinnerNumberModel value = new SpinnerNumberModel(0,0,300,1);
+        SpinnerNumberModel value = new SpinnerNumberModel(Values.delay,0,300,1);
         delay = new JSpinner(value);
         delay.setFont(font);
         delay.setBounds(150,y,45,20);
@@ -55,16 +55,19 @@ public class PreferenceWindow extends JFrame{
 
         themes = new String[]{"White","Dark"};
         lookAndFeel = new JComboBox(themes);
+        lookAndFeel.setSelectedIndex(Values.theme);
         lookAndFeel.setFont(font);
         lookAndFeel.setBounds(150,y*3,80,20);
 
         formats = new String[]{"PNG","JPG"};
         format = new JComboBox(formats);
+        format.setSelectedIndex(Values.format);
         format.setFont(font);
         format.setBounds(150,y*4,80,20);
 
         alwaysOnTop = new JCheckBox("Always On Top");
         alwaysOnTop.setFont(font);
+        alwaysOnTop.setSelected(Values.alwaysOnTop);
         alwaysOnTop.setBounds(x,y*5,120,17);
         alwaysOnTop.setFocusable(false);
 

@@ -3,8 +3,10 @@ package io;
 import parameter.Values;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.util.Scanner;
 
@@ -50,15 +52,13 @@ public class IO {
 
     public static void saveImage(BufferedImage ss){
         String imgFormat = Values.format == 0 ? "png" : "jpg";
-        String imgName = Values.FILE_NAME;
         int i = 0;
-        File file = new File(Values.defaultLocation+Values.FILE_NAME+i+"."+imgFormat);
-        while(file.exists()){
+        File file;
+        while((file = new File(Values.defaultLocation+Values.FILE_NAME+i+"."+imgFormat)).exists()){
             i++;
-            file = new File(Values.defaultLocation+Values.FILE_NAME+i+"."+imgFormat);
         }
         try {
-            ImageIO.write(ss, imgFormat, new File(Values.defaultLocation + imgName + i+"." + imgFormat));
+            ImageIO.write(ss, imgFormat, file);
         }catch(Exception ex){
             System.out.println(ex);
         }
@@ -69,16 +69,10 @@ public class IO {
         if(!preferenceFile.exists()){
             write();
         }
-        Scanner reader = null;
         try{
-            String content = "";
-            reader = new Scanner(preferenceFile);
-            while(reader.hasNextLine()) {
-                content+=reader.next();
-            }
+            String content = readFileContent(preferenceFile);
             if(!content.equals("")){
                 String lines[] = content.split(";");
-                System.out.println(lines.length);
                 if(lines.length==9){
                     Values.fullscreen = lines[0].split("=")[1].equals("true");
                     for(int i=0;i<Values.customFrame.length;i++){
@@ -96,12 +90,6 @@ public class IO {
             }
         }catch(Exception ex){
             System.out.println(ex);
-        }finally{
-            try{
-                reader.close();
-            }catch(Exception ex){
-                System.out.println(ex);
-            }
         }
         return false;
     }
@@ -124,11 +112,16 @@ public class IO {
         }
     }
 
-    public static void main(String[] args) throws Exception{
-        //these 2 lines must stay in the main method
-        Values.customFrame[2] = 300;
-        Values.customFrame[3] = 300;
-        new IO().write();
+    public static String readFileContent(File file) throws Exception{
+        FileInputStream fileInputStream;
+        String content;
+        fileInputStream = new FileInputStream(file);
+        byte[] value = new byte[(int) file.length()];
+        fileInputStream.read(value);
+        fileInputStream.close();
+        content = new String(value, "UTF-8");
+        return content;
     }
+
 
 }

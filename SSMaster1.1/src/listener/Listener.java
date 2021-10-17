@@ -3,6 +3,9 @@ package listener;
 import additionalwindows.CustomFrame;
 import additionalwindows.PreferenceWindow;
 import additionalwindows.PreviewWindow;
+import capture.Capture;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import io.IO;
 import parameter.Values;
 import ui.UI;
 import ui.Window;
@@ -11,8 +14,9 @@ import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
+import java.io.File;
 
-public class Listener extends KeyAdapter implements ActionListener, ChangeListener, MouseListener,MouseMotionListener {
+public class Listener extends KeyAdapter implements ActionListener, ChangeListener, MouseListener,MouseMotionListener,WindowListener {
 
     public UI ui;
     public JFileChooser fc;
@@ -23,12 +27,17 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public int x,y;
 
     Window window;
+    IO io;
 
-    public Listener(Window window){
+    public Listener(Window window, IO io){
         this.window = window;
+        this.io = io;
         fc = new JFileChooser(".");
         initWindows();
         registerComponentListener();
+        if(!Values.fullscreen){
+            cf.setVisible(true);
+        }
     }
 
     public void initWindows(){
@@ -64,6 +73,44 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.delay.addChangeListener(this);
         pw.lookAndFeel.addActionListener(this);
         pw.format.addActionListener(this);
+        pw.addWindowListener(this);
+    }
+
+    public void fetchData(){
+        Values.fullscreen = ui.fullscreen.isSelected();
+        Values.customFrame[0] = cf.getX();
+        Values.customFrame[1] = cf.getY();
+        Values.customFrame[2] = cf.getWidth();
+        Values.customFrame[3] = cf.getHeight();
+        Values.delay = (int)(pw.delay.getValue());
+        Values.defaultLocation = pw.defaultSavePath.getText();
+        Values.theme = pw.lookAndFeel.getSelectedIndex();
+        Values.format = pw.format.getSelectedIndex();
+        Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
+        Values.fps = (int)ui.fps.getValue();
+        Values.duration = Integer.parseInt(ui.duration.getText());
+    }
+
+    public void capture(){
+        boolean isPrefWindowVisible = pw.isVisible();
+        window.setVisible(false);
+        pw.setVisible(false);
+        cf.setVisible(false);
+        Capture capture = new Capture();
+        Thread thread = new Thread(capture);
+        thread.start();
+        try{
+            thread.join();
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+        if(!Values.fullscreen){
+            cf.setVisible(true);
+        }
+        if(isPrefWindowVisible){
+            pw.setVisible(true);
+        }
+        window.setVisible(true);
     }
 
     public void show(){
@@ -78,6 +125,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         }else if(source == ui.fullscreen || source == ui.custom){
             Values.fullscreen = ui.fullscreen.isSelected();
             cf.setVisible(!Values.fullscreen);
+            fetchData();
         }else if(source == ui.open){
             fc.setDialogTitle("Open");
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -87,8 +135,18 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             }
         }else if(source == ui.preference){
             pw.setVisible(true);
+        }else if(source == ui.capture) {
+            fetchData();
+            capture();
         }else if(source == ui.exit){
             System.exit(0);
+        }else if(source == ui.newCapture){
+            fetchData();
+            capture();
+        }else if(source == ui.snapIn3){
+
+        }else if(source == ui.snapIn5){
+
         }
 
 
@@ -100,12 +158,11 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int response = fc.showOpenDialog(null);
             if(response == JFileChooser.APPROVE_OPTION){
-                Values.defaultLocation = fc.getSelectedFile().getAbsolutePath();
+                Values.defaultLocation = fc.getSelectedFile().getAbsolutePath() + File.separator;
                 pw.defaultSavePath.setText(Values.defaultLocation);
             }
         }else if(source == pw.lookAndFeel){
             Values.theme = pw.lookAndFeel.getSelectedIndex();
-            System.out.println(Values.theme);
         }else if(source == pw.format){
             Values.format = pw.format.getSelectedIndex();
         }
@@ -171,6 +228,45 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        if(e.getSource() == pw){
+            fetchData();
+            io.write();
+            pw.setVisible(false);
+        }
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
 
     }
 }

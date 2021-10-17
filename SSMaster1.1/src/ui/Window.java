@@ -1,5 +1,6 @@
 package ui;
 
+import io.IO;
 import listener.Listener;
 import parameter.Values;
 
@@ -21,7 +22,11 @@ public class Window extends JFrame {
     }
 
     public static void main(String[] args){
-        new Listener(new Window()).show();
+        Window window = new Window();
+        IO io = new IO();
+        io.read();
+        Listener listener = new Listener(window,io);
+        listener.show();
     }
 
 }

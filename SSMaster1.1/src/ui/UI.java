@@ -7,6 +7,7 @@ import parameter.Values;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 public class UI {
 
@@ -47,17 +48,22 @@ public class UI {
         menuBar = new JMenuBar();
 
         file = new JMenu("File");
+        file.setMnemonic(KeyEvent.VK_F);//alt + f to open file menu
         quickSnap = new JMenu("Quick-Capture");
+        quickSnap.setMnemonic(KeyEvent.VK_Q); //alt + q to open quicksnap menu
         options = new JMenu("Options");
 
         //file
         newCapture = new JMenuItem("Capture");
+        newCapture.setMnemonic(KeyEvent.VK_Z); // z to capture
         open = new JMenuItem("Open");
         exit = new JMenuItem("Exit");
 
         //edit
-        snapIn3 = new JMenuItem("Capture in 3 seconds");
-        snapIn5 = new JMenuItem("Capture in 5 seconds");
+        snapIn3 = new JMenuItem("Capture in 3 seconds"); // a to capture in 3
+        snapIn5 = new JMenuItem("Capture in 5 seconds"); // s to capture in 5
+        snapIn3.setMnemonic(KeyEvent.VK_A);
+        snapIn5.setMnemonic(KeyEvent.VK_S);
 
         //options
         preference  = new JMenuItem("Preference");
@@ -67,18 +73,22 @@ public class UI {
 
         Font font = new Font("Arial",Font.BOLD,15);
 
-        fullscreen.setBounds(50,30,100,30);
+        fullscreen.setBounds(50,30,120,30);
         fullscreen.setFont(font);
         fullscreen.setFocusable(false);
-        fullscreen.setSelected(true);
+        if(Values.fullscreen){
+            fullscreen.setSelected(true);
+        }else{
+            custom.setSelected(true);
+        }
 
-        custom.setBounds(175,30,100,30);
+        custom.setBounds(175,30,120,30);
         custom.setFont(font);
         custom.setFocusable(false);
         btngrp = new ButtonGroup();
 
         contCapture = new JCheckBox("Continuous capture");
-        contCapture.setBounds(50,70,170,30);
+        contCapture.setBounds(50,70,190,30);
         contCapture.setFont(font);
         contCapture.setFocusable(false);
 
@@ -86,11 +96,11 @@ public class UI {
         fps = new JSpinner(sModel);
         fps.setFont(font);
         ((JSpinner.DefaultEditor) fps.getEditor()).getTextField().setEditable(false);
-        fps.setSize(40,20);
+        fps.setSize(50,20);
 
         duration = new JTextField(String.valueOf(Values.duration));
         duration.setFont(font);
-        duration.setSize(50,20);
+        duration.setSize(60,20);
         duration.setHorizontalAlignment(JTextField.CENTER);
         duration.setToolTipText("in seconds");
 
@@ -102,10 +112,10 @@ public class UI {
         durationLabel.setFont(font);
         durationLabel.setSize(100,20);
 
-        fps.setLocation(90,120);
+        fps.setLocation(80,120);
         duration.setLocation(215,120);
-        fpsLabel.setLocation(40,120);
-        durationLabel.setLocation(140,120);
+        fpsLabel.setLocation(30,120);
+        durationLabel.setLocation(135,120);
 
         capture = new JButton("Capture");
         capture.setBounds(95,CAPTBTN_NORMAL_Y,100,30);
