@@ -42,6 +42,7 @@ public class PreferenceWindow extends JFrame{
         delay = new JSpinner(value);
         delay.setFont(font);
         delay.setBounds(150,y,45,20);
+        delay.setToolTipText("in seconds");
         ((JSpinner.DefaultEditor) delay.getEditor()).getTextField().setEditable(false);
 
         defaultSavePath = new JTextField(Values.defaultLocation);

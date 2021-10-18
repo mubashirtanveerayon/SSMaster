@@ -60,7 +60,7 @@ public class IO {
         }
         try {
             ImageIO.write(ss, imgFormat, file);
-            if(Values.openAfterCapture){
+            if(Values.openAfterCapture && !Values.continuous){
                 Desktop.getDesktop().open(file);
             }
         }catch(Exception ex){
@@ -129,5 +129,9 @@ public class IO {
         return content;
     }
 
+
+    public static void print_delay(){
+        System.out.println(Values.delay*1000);
+    }
 
 }

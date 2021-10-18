@@ -38,4 +38,6 @@ public class Values {
 
     public static boolean openAfterCapture = false;
 
+    public static final int DEFAULT_DELAY = 200;
+
 }

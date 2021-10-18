@@ -8,13 +8,16 @@ import io.IO;
 import parameter.Values;
 import ui.UI;
 import ui.Window;
-
-import javax.swing.*;
+import java.util.Timer;
+import javax.swing.JLabel;
+import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+
+import static parameter.Values.alwaysOnTop;
 
 public class Listener extends KeyAdapter implements ActionListener, ChangeListener, MouseListener,MouseMotionListener,WindowListener {
 
@@ -28,14 +31,14 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
 
     public int x,y;
 
-    Window window;
+    public Window window;
     IO io;
 
     public Listener(Window window, IO io){
         this.window = window;
         this.io = io;
         fc = new JFileChooser(".");
-        capture = new Capture();
+        capture = new Capture(this);
         initWindows();
         registerComponentListener();
         if(!Values.fullscreen){
@@ -94,32 +97,22 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         Values.defaultLocation = pw.defaultSavePath.getText();
         Values.theme = pw.theme.getSelectedIndex();
         Values.format = pw.format.getSelectedIndex();
-        Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
+        alwaysOnTop = pw.alwaysOnTop.isSelected();
         Values.fps = (int)ui.fps.getValue();
         Values.duration = Integer.parseInt(ui.duration.getText());
         Values.openAfterCapture = pw.openFile.isSelected();
+        Values.continuous = ui.contCapture.isSelected();
+        cf.setVisible(!Values.fullscreen);
+        changeTheme();
     }
 
-    public void capture(){
-        boolean isPrefWindowVisible = pw.isVisible();
+    public Thread capture(){
+        capture.isPrefWindowVisible = pw.isVisible();
         window.setVisible(false);
         pw.setVisible(false);
         cf.setVisible(false);
-        capture.wait = true;
         Thread thread = new Thread(capture);
-        thread.start();
-        try{
-            thread.join();
-        }catch(Exception ex){
-            System.out.println(ex);
-        }
-        if(!Values.fullscreen){
-            cf.setVisible(true);
-        }
-        if(isPrefWindowVisible){
-            pw.setVisible(true);
-        }
-        window.setVisible(true);
+        return thread;
     }
 
     public void exit(){
@@ -129,10 +122,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public void changeTheme(){
-        window.setAlwaysOnTop(Values.alwaysOnTop);
-        pw.setAlwaysOnTop(Values.alwaysOnTop);
-        cf.setAlwaysOnTop(Values.alwaysOnTop);
-
+        window.setAlwaysOnTop(alwaysOnTop);
+        pw.setAlwaysOnTop(alwaysOnTop);
+        cf.setAlwaysOnTop(alwaysOnTop);
+        ui.conCaptDetails(Values.continuous);
         if(Values.theme == 0){
             window.getContentPane().setBackground(null);
             ui.custom.setForeground(null);
@@ -183,14 +176,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if(source == ui.contCapture){
-            Values.continuous = ui.contCapture.isSelected();
-            ui.conCaptDetails(Values.continuous);
-        }else if(source == ui.fullscreen || source == ui.custom){
-            Values.fullscreen = ui.fullscreen.isSelected();
-            cf.setVisible(!Values.fullscreen);
-            fetchData();
-        }else if(source == ui.open){
+        if(source == ui.open){
             fc.setDialogTitle("Open");
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int response = fc.showOpenDialog(null);
@@ -202,25 +188,38 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         }else if(source == ui.capture) {
             fetchData();
             if(ui.contCapture.isSelected()){
-
-            }else{
-                capture();
+                capture.totalFrames = Values.fps*Values.duration;
             }
+            capture().start();
         }else if(source == ui.exit){
             exit();
         }else if(source == ui.newCapture){
             fetchData();
-            capture();
+            capture().start();
         }else if(source == ui.snapIn3){
-            int prevDelay = Values.delay;
-            Values.delay = 3;
-            capture();
-            Values.delay = prevDelay;
+            fetchData();
+            boolean prevContinuous = Values.continuous;
+            Values.continuous =  false;
+            capture.qc = 3;
+            capture().start();
+            try{
+                capture().join();
+            }catch(Exception ex){
+                System.out.println(ex);
+            }
+            Values.continuous = prevContinuous;
         }else if(source == ui.snapIn5){
-            int prevDelay = Values.delay;
-            Values.delay = 5;
-            capture();
-            Values.delay = prevDelay;
+            fetchData();
+            boolean prevContinuous = Values.continuous;
+            Values.continuous =  false;
+            capture.qc = 5;
+            capture().start();
+            try{
+                capture().join();
+            }catch(Exception ex){
+                System.out.println(ex);
+            }
+            Values.continuous = prevContinuous;
         }else if(source == pw.changeDefaultSavePathButton){
             fc.setDialogTitle("Save");
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -229,14 +228,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
                 Values.defaultLocation = fc.getSelectedFile().getAbsolutePath() + File.separator;
                 pw.defaultSavePath.setText(Values.defaultLocation);
             }
-        }else if(source == pw.theme){
-            Values.theme = pw.theme.getSelectedIndex();
-        }else if(source == pw.format){
-            Values.format = pw.format.getSelectedIndex();
-        }else if(source == pw.alwaysOnTop){
-            Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
-        }else if(source == pw.openFile){
-            Values.openAfterCapture = pw.openFile.isSelected();
+        }else if(source == ui.contCapture || source == ui.fullscreen || source == ui.custom||source == pw.theme || source == pw.format || source == pw.alwaysOnTop || source == pw.openFile){
+            fetchData();
         }
     }
 
