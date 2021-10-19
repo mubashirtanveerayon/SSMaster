@@ -1,5 +1,7 @@
 package parameter;
 
+import additionalwindows.PreviewWindow;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -39,5 +41,7 @@ public class Values {
     public static boolean openAfterCapture = false;
 
     public static final int DEFAULT_DELAY = 200;
+
+    public static PreviewWindow previewWindow = new PreviewWindow();
 
 }

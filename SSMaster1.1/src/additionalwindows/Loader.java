@@ -61,6 +61,7 @@ public class Loader extends JFrame implements Runnable{
     public void run(){
         setState(Frame.ICONIFIED);
         setVisible(true);
+        stop = false;
         while(progressBar.getValue()<=100 && !stop){
             label.setText("Capturing... "+String.valueOf(capture.completed)+"/"+String.valueOf(capture.totalFrames));
             float value = ((float)capture.completed/(float)capture.totalFrames) * 100f;

@@ -11,6 +11,8 @@ import java.io.FileWriter;
 
 public class IO {
 
+    public static int serial = 0;
+
     public IO(){
         File location = new File(Values.PREFERENCE_SAVE_PATH);
         if(!location.exists()){
@@ -53,15 +55,18 @@ public class IO {
 
     public static void saveImage(BufferedImage ss){
         String imgFormat = Values.format == 0 ? "png" : "jpg";
-        int i = 0;
+        int i = Values.continuous ? serial:0;
         File file;
-        while((file = new File(Values.defaultLocation+Values.FILE_NAME+i+"."+imgFormat)).exists()){
+        while((file = new File(Values.defaultLocation+Values.FILE_NAME+i+"."+imgFormat)).exists()&&!Values.continuous){
             i++;
         }
         try {
             ImageIO.write(ss, imgFormat, file);
             if(Values.openAfterCapture && !Values.continuous){
-                Desktop.getDesktop().open(file);
+                if(Values.previewWindow.isVisible()){
+                    Values.previewWindow.dispose();
+                }
+                Values.previewWindow.show(file.getAbsolutePath());
             }
         }catch(Exception ex){
             System.out.println(ex);
@@ -127,6 +132,14 @@ public class IO {
         fileInputStream.close();
         content = new String(value, "UTF-8");
         return content;
+    }
+
+    public static void checkSerial(){
+        String imgFormat = Values.format == 0?".png":".jpg";
+        serial = 0;
+        while(new File(Values.defaultLocation+Values.FILE_NAME+serial+imgFormat).exists()){
+            serial++;
+        }
     }
 
 

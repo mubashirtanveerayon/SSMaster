@@ -8,14 +8,11 @@ import parameter.Values;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static java.lang.Thread.sleep;
-
 public class Capture implements Runnable{
 
     public Listener listener;
     public long totalFrames;
     public long completed;
-    public int qc;
 
 
     public Capture(Listener listener){
@@ -42,20 +39,17 @@ public class Capture implements Runnable{
 
     @Override
     public void run() {
-        int prevDelay = Values.delay;
-        if(qc!=0){
-            Values.delay = qc;
-        }
         try{
-            sleep(Values.DEFAULT_DELAY+Values.delay*1000L);
+            Thread.sleep(Values.DEFAULT_DELAY+Values.delay*1000L);
         }catch(Exception ex){
             System.out.println(ex);
         }
         if(Values.continuous){
             completed = 0;
+            IO.checkSerial();
             while(completed<totalFrames&&!Loader.stop){
                 try{
-                    sleep((long)1000f/Values.fps);
+                    Thread.sleep((long)1000f/Values.fps);
                 }catch(Exception ex){
                     System.out.println(ex);
                 }
@@ -64,6 +58,7 @@ public class Capture implements Runnable{
                 }else{
                     IO.saveImage(captureScreenshot(Values.customFrame));
                 }
+                IO.serial++;
                 completed ++;
             }
         }else{
@@ -76,8 +71,6 @@ public class Capture implements Runnable{
         listener.show();
         completed = 0;
         totalFrames = 0;
-        Values.delay = prevDelay;
-        qc = 0;
-        Loader.stop = false;
+        Loader.stop = true;
     }
 }

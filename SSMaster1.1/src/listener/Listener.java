@@ -18,7 +18,6 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
 
     public UI ui;
     public JFileChooser fc;
-    public PreviewWindow imageWindow;
     public CustomFrame cf;
     public PreferenceWindow pw;
 
@@ -48,7 +47,6 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public void initWindows(){
         ui = new UI(window);
         cf = new CustomFrame();
-        imageWindow = new PreviewWindow();
         pw = new PreferenceWindow();
         loader = new Loader(capture);
     }
@@ -105,7 +103,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         changeTheme();
     }
 
-    public Thread capture(){
+    public Thread continuousCapture(){
         isPrefWindowVisible = pw.isVisible();
         window.setVisible(false);
         pw.setVisible(false);
@@ -167,6 +165,58 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         }
     }
 
+    public Thread capture(){
+        fetchData();
+        Values.continuous = false;
+        isPrefWindowVisible = pw.isVisible();
+        pw.setVisible(false);
+        window.setVisible(false);
+        cf.setVisible(false);
+        Thread thread = new Thread(){
+            public void run() {
+                try {
+                    Thread.sleep(Values.DEFAULT_DELAY+Values.delay * 1000L);
+                }catch(Exception ex){
+                    System.out.println(ex);
+                }
+                if(Values.fullscreen) {
+                    IO.saveImage(Capture.captureScreenshot());
+                }else{
+                    IO.saveImage(Capture.captureScreenshot(Values.customFrame));
+                }
+                Values.continuous = ui.contCapture.isSelected();
+                show();
+            }
+        };
+        return thread;
+    }
+
+    public Thread capture(int qc){
+        fetchData();
+        Values.continuous = false;
+        isPrefWindowVisible = pw.isVisible();
+        pw.setVisible(false);
+        window.setVisible(false);
+        cf.setVisible(false);
+        Thread thread = new Thread(){
+            public void run() {
+                try {
+                    Thread.sleep(Values.DEFAULT_DELAY+qc * 1000L);
+                }catch(Exception ex){
+                    System.out.println(ex);
+                }
+                if(Values.fullscreen) {
+                    IO.saveImage(Capture.captureScreenshot());
+                }else{
+                    IO.saveImage(Capture.captureScreenshot(Values.customFrame));
+                }
+                Values.continuous = ui.contCapture.isSelected();
+                show();
+            }
+        };
+        return thread;
+    }
+
     public void show(){
         cf.setVisible(!Values.fullscreen);
         pw.setVisible(isPrefWindowVisible);
@@ -181,7 +231,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int response = fc.showOpenDialog(null);
             if(response == JFileChooser.APPROVE_OPTION){
-                imageWindow.show(fc.getSelectedFile().getAbsolutePath());
+                if(Values.previewWindow.isVisible()){
+                    Values.previewWindow.dispose();
+                }
+                Values.previewWindow.show(fc.getSelectedFile().getAbsolutePath());
             }
         }else if(source == ui.preference){
             pw.setVisible(true);
@@ -192,37 +245,18 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
                 Thread thread = new Thread(loader);
                 thread.start();
                 capture.totalFrames = Values.fps*Values.duration;
+                continuousCapture().start();
+            }else{
+                capture().start();
             }
-            capture().start();
         }else if(source == ui.exit){
             exit();
         }else if(source == ui.newCapture){
-            fetchData();
             capture().start();
         }else if(source == ui.snapIn3){
-            fetchData();
-            boolean prevContinuous = Values.continuous;
-            Values.continuous =  false;
-            capture.qc = 3;
-            capture().start();
-            try{
-                capture().join();
-            }catch(Exception ex){
-                System.out.println(ex);
-            }
-            Values.continuous = prevContinuous;
+            capture(3).start();
         }else if(source == ui.snapIn5){
-            fetchData();
-            boolean prevContinuous = Values.continuous;
-            Values.continuous =  false;
-            capture.qc = 5;
-            capture().start();
-            try{
-                capture().join();
-            }catch(Exception ex){
-                System.out.println(ex);
-            }
-            Values.continuous = prevContinuous;
+            capture(5).start();
         }else if(source == pw.changeDefaultSavePathButton){
             fc.setDialogTitle("Save");
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
