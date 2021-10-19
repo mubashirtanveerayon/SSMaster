@@ -21,7 +21,7 @@ public class UI {
 
     public JMenu file, quickSnap,options;
 
-    public JMenuItem newCapture,open, snapIn3, snapIn5,preference,exit;
+    public JMenuItem newCapture,open, snapIn3, snapIn5,preference,about,exit;
 
     public JButton capture;
 
@@ -55,18 +55,19 @@ public class UI {
 
         //file
         newCapture = new JMenuItem("Capture");
-        newCapture.setMnemonic(KeyEvent.VK_Z); // z to capture
+        newCapture.setMnemonic(KeyEvent.VK_C); // c to capture
         open = new JMenuItem("Open");
         exit = new JMenuItem("Exit");
 
         //edit
-        snapIn3 = new JMenuItem("Capture in 3 seconds"); // a to capture in 3
-        snapIn5 = new JMenuItem("Capture in 5 seconds"); // s to capture in 5
-        snapIn3.setMnemonic(KeyEvent.VK_A);
-        snapIn5.setMnemonic(KeyEvent.VK_S);
+        snapIn3 = new JMenuItem("Capture in 3 seconds"); // 3 to capture in 3
+        snapIn5 = new JMenuItem("Capture in 5 seconds"); // 5 to capture in 5
+        snapIn3.setMnemonic(KeyEvent.VK_3);
+        snapIn5.setMnemonic(KeyEvent.VK_5);
 
         //options
         preference  = new JMenuItem("Preference");
+        about = new JMenuItem("About");
 
         fullscreen = new JRadioButton("Fullscreen");
         custom = new JRadioButton("Custom");
@@ -135,6 +136,7 @@ public class UI {
         quickSnap.add(snapIn3);
         quickSnap.add(snapIn5);
         options.add(preference);
+        options.add(about);
 
         menuBar.add(file);
         menuBar.add(quickSnap);

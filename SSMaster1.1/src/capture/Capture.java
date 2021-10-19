@@ -1,5 +1,6 @@
 package capture;
 
+import additionalwindows.Loader;
 import io.IO;
 import listener.Listener;
 import parameter.Values;
@@ -15,14 +16,12 @@ public class Capture implements Runnable{
     public long totalFrames;
     public long completed;
     public int qc;
-    public boolean isPrefWindowVisible;
+
 
     public Capture(Listener listener){
         this.listener = listener;
         completed = 0;
         totalFrames = 0;
-        isPrefWindowVisible = false;
-        qc = 0;
     }
 
     public static BufferedImage captureScreenshot(int[] frame){
@@ -54,7 +53,7 @@ public class Capture implements Runnable{
         }
         if(Values.continuous){
             completed = 0;
-            while(completed<totalFrames){
+            while(completed<totalFrames&&!Loader.stop){
                 try{
                     sleep((long)1000f/Values.fps);
                 }catch(Exception ex){
@@ -67,11 +66,6 @@ public class Capture implements Runnable{
                 }
                 completed ++;
             }
-            if(isPrefWindowVisible){
-                listener.pw.setVisible(true);
-            }
-            listener.cf.setVisible(!Values.fullscreen);
-            listener.window.setVisible(true);
         }else{
             if(Values.fullscreen){
                 IO.saveImage(captureScreenshot());
@@ -79,14 +73,11 @@ public class Capture implements Runnable{
                 IO.saveImage(captureScreenshot(Values.customFrame));
             }
         }
-        if(isPrefWindowVisible){
-            listener.pw.setVisible(true);
-        }
-        listener.cf.setVisible(!Values.fullscreen);
-        listener.window.setVisible(true);
+        listener.show();
         completed = 0;
         totalFrames = 0;
         Values.delay = prevDelay;
         qc = 0;
+        Loader.stop = false;
     }
 }

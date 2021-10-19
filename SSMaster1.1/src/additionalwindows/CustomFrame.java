@@ -1,7 +1,6 @@
 package additionalwindows;
 
 import componentresizer.ComponentResizer;
-import listener.Listener;
 import parameter.Values;
 
 import javax.swing.*;

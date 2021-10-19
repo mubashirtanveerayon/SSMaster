@@ -1,14 +1,11 @@
 package listener;
 
-import additionalwindows.CustomFrame;
-import additionalwindows.PreferenceWindow;
-import additionalwindows.PreviewWindow;
+import additionalwindows.*;
 import capture.Capture;
 import io.IO;
 import parameter.Values;
 import ui.UI;
 import ui.Window;
-import java.util.Timer;
 import javax.swing.JLabel;
 import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
@@ -16,8 +13,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-
-import static parameter.Values.alwaysOnTop;
 
 public class Listener extends KeyAdapter implements ActionListener, ChangeListener, MouseListener,MouseMotionListener,WindowListener {
 
@@ -32,19 +27,21 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public int x,y;
 
     public Window window;
+
+    public boolean isPrefWindowVisible;
+
     IO io;
+
+    public Loader loader;
 
     public Listener(Window window, IO io){
         this.window = window;
         this.io = io;
         fc = new JFileChooser(".");
         capture = new Capture(this);
+        isPrefWindowVisible = false;
         initWindows();
         registerComponentListener();
-        if(!Values.fullscreen){
-            cf.setVisible(true);
-        }
-        ui.conCaptDetails(Values.continuous);
         changeTheme();
     }
 
@@ -53,6 +50,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         cf = new CustomFrame();
         imageWindow = new PreviewWindow();
         pw = new PreferenceWindow();
+        loader = new Loader(capture);
     }
 
     public void registerComponentListener(){
@@ -71,6 +69,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         ui.fullscreen.addActionListener(this);
         ui.duration.addKeyListener(this);
         ui.fps.addChangeListener(this);
+        ui.about.addActionListener(this);
 
         //customFrame
         cf.addMouseListener(this);
@@ -97,7 +96,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         Values.defaultLocation = pw.defaultSavePath.getText();
         Values.theme = pw.theme.getSelectedIndex();
         Values.format = pw.format.getSelectedIndex();
-        alwaysOnTop = pw.alwaysOnTop.isSelected();
+        Values.alwaysOnTop = pw.alwaysOnTop.isSelected();
         Values.fps = (int)ui.fps.getValue();
         Values.duration = Integer.parseInt(ui.duration.getText());
         Values.openAfterCapture = pw.openFile.isSelected();
@@ -107,12 +106,11 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public Thread capture(){
-        capture.isPrefWindowVisible = pw.isVisible();
+        isPrefWindowVisible = pw.isVisible();
         window.setVisible(false);
         pw.setVisible(false);
         cf.setVisible(false);
-        Thread thread = new Thread(capture);
-        return thread;
+        return new Thread(capture);
     }
 
     public void exit(){
@@ -122,9 +120,9 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public void changeTheme(){
-        window.setAlwaysOnTop(alwaysOnTop);
-        pw.setAlwaysOnTop(alwaysOnTop);
-        cf.setAlwaysOnTop(alwaysOnTop);
+        window.setAlwaysOnTop(Values.alwaysOnTop);
+        pw.setAlwaysOnTop(Values.alwaysOnTop);
+        cf.setAlwaysOnTop(Values.alwaysOnTop);
         ui.conCaptDetails(Values.continuous);
         if(Values.theme == 0){
             window.getContentPane().setBackground(null);
@@ -170,6 +168,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public void show(){
+        cf.setVisible(!Values.fullscreen);
+        pw.setVisible(isPrefWindowVisible);
         window.setVisible(true);
     }
 
@@ -185,9 +185,12 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             }
         }else if(source == ui.preference){
             pw.setVisible(true);
+            isPrefWindowVisible = true;
         }else if(source == ui.capture) {
             fetchData();
             if(ui.contCapture.isSelected()){
+                Thread thread = new Thread(loader);
+                thread.start();
                 capture.totalFrames = Values.fps*Values.duration;
             }
             capture().start();
@@ -308,6 +311,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             io.write();
             changeTheme();
             pw.setVisible(false);
+            isPrefWindowVisible = false;
         }else if(e.getSource() == window){
             exit();
         }
