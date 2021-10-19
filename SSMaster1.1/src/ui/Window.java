@@ -15,6 +15,7 @@ public class Window extends JFrame {
 
     public Window(){
         super(Values.TITLE);
+        setIconImage(Values.LOGO.getImage());
         setBounds(Values.SCREEN_SIZE.width/2-300/2,Values.SCREEN_SIZE.height/2-NORMAL_HEIGHT/2,300, NORMAL_HEIGHT);
         setDefaultCloseOperation(0);
         setLayout(null);

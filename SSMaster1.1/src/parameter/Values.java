@@ -2,11 +2,13 @@ package parameter;
 
 import additionalwindows.PreviewWindow;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
+import java.net.URL;
 
 public class Values {
+    public static final ImageIcon LOGO = new ImageIcon(load("res/transparentlogo.png"));
 
     public static boolean alwaysOnTop = false;
 
@@ -43,5 +45,13 @@ public class Values {
     public static final int DEFAULT_DELAY = 200;
 
     public static PreviewWindow previewWindow = new PreviewWindow();
+
+    public static URL load(String path) {
+        URL input = Window.class.getResource(path);
+        if (input == null) {
+            input = Window.class.getResource("/" + path);
+        }
+        return input;
+    }
 
 }

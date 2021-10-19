@@ -20,6 +20,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     public JFileChooser fc;
     public CustomFrame cf;
     public PreferenceWindow pw;
+    public About about;
 
     public Capture capture;
 
@@ -49,6 +50,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         cf = new CustomFrame();
         pw = new PreferenceWindow();
         loader = new Loader(capture);
+        about = new About();
     }
 
     public void registerComponentListener(){
@@ -118,12 +120,18 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
     }
 
     public void changeTheme(){
+        cf.setAlwaysOnTop(Values.alwaysOnTop);
         window.setAlwaysOnTop(Values.alwaysOnTop);
         pw.setAlwaysOnTop(Values.alwaysOnTop);
-        cf.setAlwaysOnTop(Values.alwaysOnTop);
+        about.window.setAlwaysOnTop(Values.alwaysOnTop);
         ui.conCaptDetails(Values.continuous);
         if(Values.theme == 0){
             window.getContentPane().setBackground(null);
+            ui.menuBar.setForeground(null);
+            ui.menuBar.setBackground(null);
+            ui.file.setForeground(Color.black);
+            ui.quickSnap.setForeground(Color.black);
+            ui.options.setForeground(Color.black);
             ui.custom.setForeground(null);
             ui.custom.setBackground(null);
             ui.fullscreen.setForeground(null);
@@ -142,8 +150,17 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             pw.alwaysOnTop.setForeground(null);
             pw.openFile.setBackground(null);
             pw.openFile.setForeground(null);
+            about.window.getContentPane().setBackground(Color.white);
+            about.label1.setForeground(null);
+            about.label2.setForeground(null);
+            about.linkLabel.setForeground(null);
         }else{
             window.getContentPane().setBackground(Color.gray);
+            ui.menuBar.setForeground(Color.white);
+            ui.menuBar.setBackground(Color.gray);
+            ui.file.setForeground(Color.white);
+            ui.quickSnap.setForeground(Color.white);
+            ui.options.setForeground(Color.white);
             ui.custom.setForeground(Color.white);
             ui.custom.setBackground(Color.gray);
             ui.fullscreen.setForeground(Color.white);
@@ -162,6 +179,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             pw.alwaysOnTop.setForeground(Color.white);
             pw.openFile.setBackground(Color.gray);
             pw.openFile.setForeground(Color.white);
+            about.window.getContentPane().setBackground(Color.gray);
+            about.label1.setForeground(Color.white);
+            about.label2.setForeground(Color.white);
+            about.linkLabel.setForeground(Color.white);
         }
     }
 
@@ -242,10 +263,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         }else if(source == ui.capture) {
             fetchData();
             if(ui.contCapture.isSelected()){
+                continuousCapture().start();
                 Thread thread = new Thread(loader);
                 thread.start();
                 capture.totalFrames = Values.fps*Values.duration;
-                continuousCapture().start();
             }else{
                 capture().start();
             }
@@ -267,6 +288,8 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             }
         }else if(source == ui.contCapture || source == ui.fullscreen || source == ui.custom||source == pw.theme || source == pw.format || source == pw.alwaysOnTop || source == pw.openFile){
             fetchData();
+        }else if(source == ui.about){
+            about.show();
         }
     }
 

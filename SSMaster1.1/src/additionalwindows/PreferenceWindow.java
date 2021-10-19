@@ -19,6 +19,7 @@ public class PreferenceWindow extends JFrame{
 
     public PreferenceWindow(){
         super("Preference");
+        setIconImage(Values.LOGO.getImage());
         setDefaultCloseOperation(0);
         setBounds(Values.SCREEN_SIZE.width/2-370/2,Values.SCREEN_SIZE.height/2-350/2,370,350);
         setLayout(null);

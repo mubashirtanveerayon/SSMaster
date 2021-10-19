@@ -11,6 +11,7 @@ public class CustomFrame extends JFrame {
     public ComponentResizer resizer;
 
     public CustomFrame(){
+        setIconImage(Values.LOGO.getImage());
         setUndecorated(true);
         setCursor(new Cursor(Cursor.MOVE_CURSOR));
 

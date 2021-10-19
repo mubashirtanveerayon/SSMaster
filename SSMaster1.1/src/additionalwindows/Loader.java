@@ -19,6 +19,7 @@ public class Loader extends JFrame implements Runnable{
 
     public Loader(Capture capture_){
         super("Capturing screenshot...");
+        setIconImage(Values.LOGO.getImage());
         setResizable(false);
         setBounds(Values.SCREEN_SIZE.width/2-310/2,Values.SCREEN_SIZE.height/2-200/2,310,200);
         setDefaultCloseOperation(0);
