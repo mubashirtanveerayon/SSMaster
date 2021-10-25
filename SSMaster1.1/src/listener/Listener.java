@@ -111,6 +111,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         window.setVisible(false);
         pw.setVisible(false);
         cf.setVisible(false);
+        about.frame.setVisible(false);
         return new Thread(capture);
     }
 
@@ -124,7 +125,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         cf.setAlwaysOnTop(Values.alwaysOnTop);
         window.setAlwaysOnTop(Values.alwaysOnTop);
         pw.setAlwaysOnTop(Values.alwaysOnTop);
-        about.window.setAlwaysOnTop(Values.alwaysOnTop);
+        about.frame.setAlwaysOnTop(Values.alwaysOnTop);
         ui.conCaptDetails(Values.continuous);
         if(Values.theme == 0){
             window.getContentPane().setBackground(null);
@@ -151,7 +152,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             pw.alwaysOnTop.setForeground(null);
             pw.openFile.setBackground(null);
             pw.openFile.setForeground(null);
-            about.window.getContentPane().setBackground(Color.white);
+            about.frame.getContentPane().setBackground(Color.white);
             about.label1.setForeground(null);
             about.label2.setForeground(null);
             about.linkLabel.setForeground(null);
@@ -180,7 +181,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             pw.alwaysOnTop.setForeground(Color.white);
             pw.openFile.setBackground(Values.DARK);
             pw.openFile.setForeground(Color.white);
-            about.window.getContentPane().setBackground(Values.DARK);
+            about.frame.getContentPane().setBackground(Values.DARK);
             about.label1.setForeground(Color.white);
             about.label2.setForeground(Color.white);
             about.linkLabel.setForeground(Color.white);
@@ -194,6 +195,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.setVisible(false);
         window.setVisible(false);
         cf.setVisible(false);
+        about.frame.setVisible(false);
         Thread thread = new Thread(){
             public void run() {
                 try {
@@ -220,6 +222,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.setVisible(false);
         window.setVisible(false);
         cf.setVisible(false);
+        about.frame.setVisible(false);
         Thread thread = new Thread(){
             public void run() {
                 try {

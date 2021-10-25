@@ -70,7 +70,8 @@ public class IO {
                 Values.previewWindow.show(file.getAbsolutePath());
             }
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null,"The directory specified does not exist! Change the save directory in the preference menu.");
+            JOptionPane.showMessageDialog(null,"The directory specified does not exist or has been modified! Change the save directory in the preference menu.");
+            System.out.println(e);
         }
 
     }

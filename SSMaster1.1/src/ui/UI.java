@@ -120,7 +120,7 @@ public class UI {
         durationLabel.setLocation(135,120);
 
         capture = new JButton("Capture");
-        capture.setBounds(80,CAPTBTN_NORMAL_Y,100,30);
+        capture.setBounds(45,CAPTBTN_NORMAL_Y,100,30);
         capture.setFont(font);
         capture.setFocusable(false);
 

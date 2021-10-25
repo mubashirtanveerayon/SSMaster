@@ -4,7 +4,7 @@ import io.IO;
 import listener.Listener;
 import parameter.Values;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class Window extends JFrame {
 

@@ -3,13 +3,10 @@ package additionalwindows;
 import parameter.Values;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.net.URI;
-import java.net.URL;
 
 public class About extends MouseAdapter {
 
@@ -19,16 +16,16 @@ public class About extends MouseAdapter {
     public static final int HEIGHT = 245;
 
 
-    public JFrame window;
+    public JFrame frame;
 
     public About(){
-        window = new JFrame("About");
-        window.setIconImage(Values.LOGO.getImage());
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setBounds(Values.SCREEN_SIZE.width/2-WIDTH/2,Values.SCREEN_SIZE.height/2-HEIGHT/2,WIDTH,HEIGHT);
-        window.setLayout(null);
-        window.setResizable(false);
-        window.getContentPane().setBackground(Color.white);
+        frame = new JFrame("About");
+        frame.setIconImage(Values.LOGO.getImage());
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setBounds(Values.SCREEN_SIZE.width/2-WIDTH/2,Values.SCREEN_SIZE.height/2-HEIGHT/2,WIDTH,HEIGHT);
+        frame.setLayout(null);
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(Color.white);
         initComponents();
     }
 
@@ -52,10 +49,10 @@ public class About extends MouseAdapter {
         linkLabel.setBorder(BorderFactory.createLineBorder(Color.white));
         linkLabel.addMouseListener(this);
 
-        window.add(label1);
-        window.add(label2);
-        window.add(imgLabel);
-        window.add(linkLabel);
+        frame.add(label1);
+        frame.add(label2);
+        frame.add(imgLabel);
+        frame.add(linkLabel);
     }
 
     @Override
@@ -84,8 +81,8 @@ public class About extends MouseAdapter {
     }
 
     public void show(){
-        if(!window.isVisible()){
-            window.setVisible(true);
+        if(!frame.isVisible()){
+            frame.setVisible(true);
         }
     }
 
