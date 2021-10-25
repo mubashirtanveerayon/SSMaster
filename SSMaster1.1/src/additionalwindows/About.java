@@ -33,8 +33,8 @@ public class About extends MouseAdapter {
     }
 
     public void initComponents(){
-        label1 = new JLabel("<html><font size=\"10\">SSMaster</font><br><font size=\"6\">version 1.1</font></html>");
-        label1.setBounds(20,0,170,85);
+        label1 = new JLabel("<html><font size=\"10\">SSMaster</font><br><font size=\"6\">version 1.1 (beta)</font></html>");
+        label1.setBounds(20,0,210,85);
         label1.setForeground(Color.black);
 
         label2 = new JLabel("<html><font size=5>Created by Ayon</font><br><font size=4>Released on 29/10/2021</font>");
@@ -42,7 +42,8 @@ public class About extends MouseAdapter {
         label2.setForeground(Color.black);
 
         imgLabel = new JLabel(Values.LOGO);
-        imgLabel.setBounds(200,5,Values.LOGO.getIconWidth(),Values.LOGO.getIconHeight());
+        imgLabel.setBounds(200,0,Values.LOGO.getIconWidth(),Values.LOGO.getIconHeight());
+        imgLabel.setToolTipText("Special thanks to AKid for the logo!");
 
         linkLabel = new JLabel("Source code!");
         linkLabel.setBounds(20,95,130,20);

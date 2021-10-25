@@ -3,11 +3,10 @@ package io;
 import parameter.Values;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class IO {
 
@@ -28,10 +27,12 @@ public class IO {
                         File newSavePath = new File(Values.defaultLocation);
                         newSavePath.mkdir();
                         if(!newSavePath.exists()){
+                            JOptionPane.showMessageDialog(null,"Something went wrong!");
                             System.exit(0);
                         }
                     }
                 }else{
+                    JOptionPane.showMessageDialog(null,"Something went wrong!");
                     System.exit(0);
                 }
             }
@@ -68,9 +69,10 @@ public class IO {
                 }
                 Values.previewWindow.show(file.getAbsolutePath());
             }
-        }catch(Exception ex){
-            System.out.println(ex);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"The directory specified does not exist! Change the save directory in the preference menu.");
         }
+
     }
 
     public boolean read(){
@@ -130,7 +132,7 @@ public class IO {
         byte[] value = new byte[(int) file.length()];
         fileInputStream.read(value);
         fileInputStream.close();
-        content = new String(value, "UTF-8");
+        content = new String(value, StandardCharsets.UTF_8);
         return content;
     }
 

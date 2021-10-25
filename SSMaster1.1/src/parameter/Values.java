@@ -8,7 +8,10 @@ import java.io.File;
 import java.net.URL;
 
 public class Values {
-    public static final ImageIcon LOGO = new ImageIcon(load("res/transparentlogo.png"));
+
+    public static final Color DARK = new Color(60,60,75);
+
+    public static final ImageIcon LOGO = new ImageIcon(load("res/ssm2.png"));
 
     public static boolean alwaysOnTop = false;
 

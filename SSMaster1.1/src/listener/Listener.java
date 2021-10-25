@@ -83,6 +83,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.theme.addActionListener(this);
         pw.format.addActionListener(this);
         pw.openFile.addActionListener(this);
+        pw.confirm.addActionListener(this);
         pw.addWindowListener(this);
     }
 
@@ -155,31 +156,31 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             about.label2.setForeground(null);
             about.linkLabel.setForeground(null);
         }else{
-            window.getContentPane().setBackground(Color.gray);
+            window.getContentPane().setBackground(Values.DARK);
             ui.menuBar.setForeground(Color.white);
-            ui.menuBar.setBackground(Color.gray);
+            ui.menuBar.setBackground(Values.DARK);
             ui.file.setForeground(Color.white);
             ui.quickSnap.setForeground(Color.white);
             ui.options.setForeground(Color.white);
             ui.custom.setForeground(Color.white);
-            ui.custom.setBackground(Color.gray);
+            ui.custom.setBackground(Values.DARK);
             ui.fullscreen.setForeground(Color.white);
-            ui.fullscreen.setBackground(Color.gray);
+            ui.fullscreen.setBackground(Values.DARK);
             ui.contCapture.setForeground(Color.white);
-            ui.contCapture.setBackground(Color.gray);
+            ui.contCapture.setBackground(Values.DARK);
             ui.fpsLabel.setForeground(Color.white);
             ui.durationLabel.setForeground(Color.white);
-            ui.fpsLabel.setBackground(Color.gray);
-            ui.durationLabel.setBackground(Color.gray);
-            pw.getContentPane().setBackground(Color.gray);
+            ui.fpsLabel.setBackground(Values.DARK);
+            ui.durationLabel.setBackground(Values.DARK);
+            pw.getContentPane().setBackground(Values.DARK);
             for(JLabel label :pw.labels){
                 label.setForeground(Color.white);
             }
-            pw.alwaysOnTop.setBackground(Color.gray);
+            pw.alwaysOnTop.setBackground(Values.DARK);
             pw.alwaysOnTop.setForeground(Color.white);
-            pw.openFile.setBackground(Color.gray);
+            pw.openFile.setBackground(Values.DARK);
             pw.openFile.setForeground(Color.white);
-            about.window.getContentPane().setBackground(Color.gray);
+            about.window.getContentPane().setBackground(Values.DARK);
             about.label1.setForeground(Color.white);
             about.label2.setForeground(Color.white);
             about.linkLabel.setForeground(Color.white);
@@ -290,6 +291,11 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             fetchData();
         }else if(source == ui.about){
             about.show();
+        }else if(source == pw.confirm){
+            pw.setVisible(false);
+            isPrefWindowVisible = false;
+            fetchData();
+            io.write();
         }
     }
 

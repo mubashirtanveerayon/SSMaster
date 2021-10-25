@@ -17,6 +17,8 @@ public class PreferenceWindow extends JFrame{
     public JCheckBox alwaysOnTop,openFile;
     public JComboBox theme,format;
 
+    public JButton confirm;
+
     public PreferenceWindow(){
         super("Preference");
         setIconImage(Values.LOGO.getImage());
@@ -31,7 +33,7 @@ public class PreferenceWindow extends JFrame{
         titles = new String[]{"Delay :","Save Location :","Theme :","Save as :"};
         labels = new JLabel[titles.length];
         Font font = new Font("Arial",Font.BOLD,13);
-        int x = 30,y = 45;
+        int x = 30,y = 40;
         for(int i=0;i<labels.length;i++){
             labels[i] = new JLabel(titles[i]);
             labels[i].setFont(font);
@@ -79,6 +81,12 @@ public class PreferenceWindow extends JFrame{
         openFile.setFocusable(false);
         openFile.setSelected(Values.openAfterCapture);
 
+        confirm = new JButton("Confirm");
+        confirm.setFocusable(false);
+        confirm.setBounds(120,270,120,30);
+        confirm.setFont(font);
+
+        add(confirm);
         add(openFile);
         add(alwaysOnTop);
         add(defaultSavePath);
