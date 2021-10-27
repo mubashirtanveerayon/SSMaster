@@ -14,6 +14,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 
+import static parameter.Values.previewWindow;
+
 public class Listener extends KeyAdapter implements ActionListener, ChangeListener, MouseListener,MouseMotionListener,WindowListener {
 
     public UI ui;
@@ -112,6 +114,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         pw.setVisible(false);
         cf.setVisible(false);
         about.frame.setVisible(false);
+        Values.previewWindow.dispose();
         return new Thread(capture);
     }
 
@@ -196,6 +199,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         window.setVisible(false);
         cf.setVisible(false);
         about.frame.setVisible(false);
+        Values.previewWindow.dispose();
         Thread thread = new Thread(){
             public void run() {
                 try {
@@ -223,6 +227,7 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
         window.setVisible(false);
         cf.setVisible(false);
         about.frame.setVisible(false);
+        Values.previewWindow.dispose();
         Thread thread = new Thread(){
             public void run() {
                 try {
@@ -256,10 +261,10 @@ public class Listener extends KeyAdapter implements ActionListener, ChangeListen
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
             int response = fc.showOpenDialog(null);
             if(response == JFileChooser.APPROVE_OPTION){
-                if(Values.previewWindow.isVisible()){
-                    Values.previewWindow.dispose();
+                if(previewWindow.isVisible()){
+                    previewWindow.dispose();
                 }
-                Values.previewWindow.show(fc.getSelectedFile().getAbsolutePath());
+                previewWindow.show(fc.getSelectedFile().getAbsolutePath());
             }
         }else if(source == ui.preference){
             pw.setVisible(true);
