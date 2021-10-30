@@ -59,7 +59,7 @@ public class About extends MouseAdapter {
     public void mouseClicked(MouseEvent me){
         if(me.getSource() == linkLabel){
             try {
-                Desktop.getDesktop().browse(new URI("https://www.github.com/mubashirtanveerayon/SSMasterv1.1"));
+                Desktop.getDesktop().browse(new URI("https://www.github.com/mubashirtanveerayon/SSMaster"));
             }catch(Exception ex){
                 System.out.println(ex);
             }
