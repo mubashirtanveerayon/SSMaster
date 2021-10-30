@@ -1,5 +1,5 @@
 # SSMasterv1.1
-<br>Run from terminal using
+Run from terminal using
 ```
 java -jar SSMasterx.x.jar
 ```
