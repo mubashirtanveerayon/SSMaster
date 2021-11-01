@@ -1,0 +1,1 @@
+java -jar "out/artifacts/SSMaster1_1_jar/SSMaster1.1.jar"
